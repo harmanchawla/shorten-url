@@ -32,6 +32,7 @@ class URLTable extends Component {
 
     render() {
         const { classes } = this.props;
+        console.log(this.props.rows, typeof(this.props.rows))
         return (
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
@@ -49,7 +50,7 @@ class URLTable extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.props.rows.map((row) => (
+                        {this.props.rows.forEach((row) => (
                             <TableRow key={row.URL} >
                                 <TableCell component="th" scope="row" className={classes.tablecell}>
                                     {row.URL}

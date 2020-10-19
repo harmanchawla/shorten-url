@@ -4,6 +4,7 @@ import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import { withStyles } from '@material-ui/styles';
 import URLTable from './URLTable';
+import firebase from './firebase-config';
 
 const styles = (theme) => ({
     root: {
@@ -54,31 +55,22 @@ class URLForm extends Component {
 
     rows = [];
 
-
     handleSubmit = async event => {
         event.preventDefault();
-        await this.addShortURL();
-        //this.setState({ url: event.target.value, shortURL: event.target.value});
-        // make POST request
-        const { URL, shortURL, open } = this.state;
-        console.log(URL, shortURL, open);
+        const URL  = this.state.URL;
 
         if (URL.length === 0) {
             return;
         }
 
-        this.rows.push({URL, shortURL});
+        if(!this.validURLHelper(URL)) {
+            alert("Please enter a valid URL");
+            return;
+        }
+
+        await this.firebaseUtil(URL);
     };
     
-
-    // dev 
-    async addShortURL() {
-        this.setState({shortURL: this.state.URL});
-    }
-
-    createRow = (url, shortURL) => {
-        return { url, shortURL }
-    }
 
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -86,6 +78,38 @@ class URLForm extends Component {
         }
         this.setState({open: false});
     };
+
+    validURLHelper = (URL) => {
+        var pattern = new RegExp('^(:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        return !!pattern.test(URL);
+    }
+
+    firebaseUtil = async (URL) => {
+        const db = firebase.firestore();
+        const URLRef = db.collection('urlLookup');
+
+        URLRef.add({
+            originalURL: URL
+        })
+        .then((docRef) => {
+            const shortURL = docRef.id;
+            // console.log(shortURL) // works
+            this.changeRows(URL, shortURL);
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+    }
+
+    changeRows = (URL, shortURL) => {
+       this.rows.push({'URL': URL, 'shortURL': shortURL});
+       console.log("Here: ", this.rows)
+    }
 
     render() {
         const { classes } = this.props;
