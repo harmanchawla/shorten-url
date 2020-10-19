@@ -5,6 +5,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { withStyles } from '@material-ui/styles';
 import URLTable from './URLTable';
 import firebase from './firebase-config';
+import shortid from 'shortid';
 
 const styles = (theme) => ({
     root: {
@@ -72,7 +73,7 @@ class URLForm extends Component {
         await this.firebaseUtil(URL);
     };
     
-
+    // Triggered when snackbar is closed
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -80,6 +81,7 @@ class URLForm extends Component {
         this.setState({open: false});
     };
 
+    // Check if string is a valid URL
     validURLHelper = (URL) => {
         var pattern = new RegExp('^(:\\/\\/)?' + // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -92,15 +94,27 @@ class URLForm extends Component {
 
     firebaseUtil = async (URL) => {
         const db = firebase.firestore();
-        const URLRef = db.collection('urlLookup');
 
-        URLRef.add({
-            originalURL: URL
+        // generate a random string literal
+        const shortURL = shortid.generate();
+
+        // create a document with the same name
+        const URLRef = db.collection('urlLookup').doc(shortURL);
+
+        // add original URL as a record in the document
+        URLRef.set({
+            originalURL: URL,
         })
         .then((docRef) => {
-            const shortURL = this.base + docRef.id;
-            this.changeRows(URL, shortURL);
-            navigator.clipboard.writeText(shortURL);
+            const shortURLText = this.base + shortURL;
+
+            // append URLs to the table
+            this.changeRows(URL, shortURLText);
+
+            // copy to clipboard
+            navigator.clipboard.writeText(shortURLText);
+
+            // reveal snackbar
             this.setState({open: true});
         })
         .catch((error) => {
@@ -108,9 +122,9 @@ class URLForm extends Component {
         });
     }
 
+    // Append objects to the table
     changeRows = (URL, shortURL) => {
        this.rows.push({'URL': URL, 'shortURL': shortURL});
-       console.log("Here: ", this.rows)
     }
 
     render() {

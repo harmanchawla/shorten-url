@@ -32,7 +32,6 @@ class URLTable extends Component {
 
     render() {
         const { classes } = this.props;
-        console.log(this.props.rows, typeof(this.props.rows))
         return (
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
@@ -56,7 +55,9 @@ class URLTable extends Component {
                                     {row.URL}
                                 </TableCell>
                                 <TableCell align="left" className={classes.tablecell}>
-                                    {row.shortURL}
+                                    <a href={row.shortURL} target="_blank" rel="noopener noreferrer" >
+                                        {row.shortURL}
+                                    </a>
                                 </TableCell>
                                 <TableCell align="right" className={classes.tablecell}>
                                     <button className={classes.button}

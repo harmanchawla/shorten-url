@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
-import './App.css';
-import Grid  from '@material-ui/core/Grid';
+import Grid from '@material-ui/core/Grid';
 import URLForm from './URLForm';
 import firebase from './firebase-config';
 
 class App extends Component {
 
   componentDidMount() {
-    let path = window.location.pathname;
+
+    // get the pathname from current URL
+    const path = window.location.pathname;
+    // remove the leading forward slash
     const shortURL = path.substring(1);
 
     if (shortURL) {
       let originalURL = '';
 
       const db = firebase.firestore();
+
+      // reference to the document with the name same as the URL path
       const URLRef = db.collection('urlLookup').doc(shortURL);
 
       URLRef
@@ -23,12 +27,15 @@ class App extends Component {
             // forward to the news page
             URLRef.onSnapshot((doc) => {
               originalURL = doc.data().originalURL;
+
               if (originalURL.includes("://")) {
+                // URL link aleady has a protocol 
                 window.location.href = originalURL;
               } else {
+                // assumption: HTTP works for the URL 
                 window.location.href = "http://" + originalURL;
               }
-              
+
             });
           } else {
             // No doc exists. Ignore the path.
@@ -42,21 +49,21 @@ class App extends Component {
 
   render() {
     return (
-        <Grid
-          container
-          spacing={3}
-          direction="column"
-          alignItems="center"
-          justify="center"
-          style={{ minHeight: '100vh', minWidth: '20vw' }}
-        >
-          <Grid item>
-            <h2>Rethink: Shorten URL </h2>
-          </Grid>
-          <Grid item>
-            <URLForm />
-          </Grid>
-        </Grid> 
+      <Grid
+        container
+        spacing={3}
+        direction="column"
+        alignItems="center"
+        justify="center"
+        style={{ minHeight: '100vh', minWidth: '20vw' }}
+      >
+        <Grid item>
+          <h2>Rethink: Shorten URL </h2>
+        </Grid>
+        <Grid item>
+          <URLForm />
+        </Grid>
+      </Grid>
     );
   }
 }
