@@ -1,63 +1,132 @@
 import React, { Component } from 'react';
-import { Input, Button, Snackbar } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
+import URLTable from './URLTable';
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
     root: {
         width: '100%',
-        '& > * + *': {
-            marginTop: theme.spacing(2),
-        },
     },
     input: {
-        width: '30vw', 
+        width: '600px', 
         boxShadow: 'inset 4px 6px 10px 0 #c4c5ce, inset -4px -6px 10px 0 #fffff',
-        font: '20px',
-        marginRight: '20px'
+        fontSize: '18px',
+        outline: 'None', 
+        border: 'None', 
+        marginLeft: '12px',
+        paddingLeft: '2px',
+        marginBottom: '2px', 
+    }, 
+    form: {
+        border: '1px solid transparent', 
+        boxShadow: '0 4px 12px rgba(32,33,36,.28)',
+        padding: '12px', 
+        borderRadius: '40px', 
+        display: 'flex', 
+        position: 'relative'
+    }, 
+    button: {
+        fontSize: '24px', 
+        color: '#4285f4',   
+        background: 'transparent', 
+        border: 'None', 
+        cursor: 'pointer',
+        right: '0', 
+        position: 'absolute', 
+        marginRight: '5px', 
+        marginTop: '-2px',
     }
-}));
+});
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-function URLForm() {
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+class URLForm extends Component {
 
-    const handleClick = () => {
-        setOpen(true);
+    state = {
+        URL: '',
+        shortURL: '',
+        open: false,
     };
 
-    const handleClose = (event, reason) => {
+    rows = [];
+
+
+    handleSubmit = async event => {
+        event.preventDefault();
+        await this.addShortURL();
+        //this.setState({ url: event.target.value, shortURL: event.target.value});
+        // make POST request
+        const { URL, shortURL, open } = this.state;
+        console.log(URL, shortURL, open);
+
+        if (URL.length === 0) {
+            return;
+        }
+
+        this.rows.push({URL, shortURL});
+    };
+    
+
+    // dev 
+    async addShortURL() {
+        this.setState({shortURL: this.state.URL});
+    }
+
+    createRow = (url, shortURL) => {
+        return { url, shortURL }
+    }
+
+    handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
-        setOpen(false);
+        this.setState({open: false});
     };
 
-    return (
-        <div className={classes.root}>
-            <form autoCapitalize="off" autoComplete="off" autoCorrect="off">
-                <Input
-                    placeholder="Paste or enter the URL here"
-                    className={classes.input}
-                />
+    render() {
+        const { classes } = this.props;
+        return (
+            <div>
+                <div className={classes.form}>
+                    <form 
+                        autoCapitalize="off" 
+                        autoComplete="off" 
+                        autoCorrect="off" 
+                        onSubmit={this.handleSubmit.bind(this)}
+                    >
+                        <input
+                            placeholder="Paste or enter the URL"
+                            type="text"
+                            className={classes.input}
+                            value={this.state.URL}
+                            onChange={ev => this.setState({URL: ev.target.value})}
+                        />
 
-                <Button variant="outlined" onClick={handleClick}>
-                    Shortern
-                </Button>
-            </form>
-            
-            
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success">
-                    Short link copied to clipboard
-            </Alert>
-            </Snackbar>
-        </div>
-    );
+                        <button onClick={this.handleSubmit.bind(this)} className={classes.button}>
+                            <i class="arrow right icon"></i>
+                        </button>
+                    </form>
+                </div>
+                <br /> <br />
+
+                <URLTable rows={this.rows} />
+
+                <Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleClose}>
+                    <Alert onClose={this.handleClose} severity="success">
+                        Short link copied to clipboard
+                    </Alert>
+                </Snackbar>
+            </div>
+        );
+    }
 }
 
-export default URLForm;
+URLForm.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(URLForm);

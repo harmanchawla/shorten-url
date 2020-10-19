@@ -1,39 +1,80 @@
 import React, { Component } from 'react';
-import { Table } from 'semantic-ui-react';
+import { withStyles } from '@material-ui/styles';
+import PropTypes from 'prop-types';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
+
+const styles = (theme) => ({
+    table: {
+        width: '600px',
+        fontSize: '16px'
+    },
+    tablecell: {
+        fontSize: '16px',
+    },
+    button: {
+        fontSize: '20px',
+        color: '#4285f4',
+        background: 'transparent',
+        border: 'None',
+        cursor: 'pointer'
+    }
+});
 
 class URLTable extends Component {
 
-    state = {
-        urls: this.props.links,
-    };
-
-    populateTable = (urls) => {
-        // console.log(this.props.links);
-        return urls.map( link => {
-            return (
-                <Table.Row>
-                    <Table.Cell> { link.url } </Table.Cell>
-                    <Table.Cell> { link.shortenURL } </Table.Cell>
-                </Table.Row>
-            );
-        })
-    }
-
     render() {
+        const { classes } = this.props;
         return (
-            <Table basic='very'>
-                <Table.Header>
-                    <Table.HeaderCell> URL </Table.HeaderCell>
-                    <Table.HeaderCell> Shorten URL </Table.HeaderCell>
-                    <Table.HeaderCell> </Table.HeaderCell>
-                </Table.Header>
-
-                <Table.Body>
-                    {this.populateTable}
-                </Table.Body>
-            </Table>
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell className={classes.tablecell}>
+                                Original URL
+                            </TableCell>
+                            <TableCell align="left" className={classes.tablecell}>
+                                Shortened URL
+                            </TableCell>
+                            <TableCell align="right" className={classes.tablecell}>
+                                Copy
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {this.props.rows.map((row) => (
+                            <TableRow key={row.URL} >
+                                <TableCell component="th" scope="row" className={classes.tablecell}>
+                                    {row.URL}
+                                </TableCell>
+                                <TableCell align="left" className={classes.tablecell}>
+                                    {row.shortURL}
+                                </TableCell>
+                                <TableCell align="right" className={classes.tablecell}>
+                                    <button className={classes.button}
+                                        onClick={()=> navigator.clipboard.writeText(row.shortURL)}>
+                                        <i class="copy outline icon"></i>
+                                    </button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         );
     }
 }
 
-export default URLTable;
+
+URLTable.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(URLTable);

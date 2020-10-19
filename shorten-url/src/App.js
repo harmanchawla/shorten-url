@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Segment } from 'semantic-ui-react';
 import Grid  from '@material-ui/core/Grid';
 import URLForm from './URLForm';
-import { Paper } from '@material-ui/core';
-
 
 class App extends Component {
 
+  componentDidMount() {
+
+    console.log(window.location.pathname);
+  }
+
   render() {
     return (
-      <Paper>
+
         <Grid
           container
           spacing={3}
@@ -19,13 +21,15 @@ class App extends Component {
           justify="center"
           style={{ minHeight: '100vh', minWidth: '20vw' }}
         >
-
+          <Grid item>
+            <h2>Rethink: Shorten URL </h2>
+          </Grid>
           <Grid item>
             <URLForm />
           </Grid>
 
         </Grid> 
-      </Paper>
+
     );
   }
 }
