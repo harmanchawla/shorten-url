@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import { Segment } from 'semantic-ui-react';
+import Grid  from '@material-ui/core/Grid';
+import URLForm from './URLForm';
+import { Paper } from '@material-ui/core';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+
+class App extends Component {
+
+  render() {
+    return (
+      <Paper>
+        <Grid
+          container
+          spacing={3}
+          direction="column"
+          alignItems="center"
+          justify="center"
+          style={{ minHeight: '100vh', minWidth: '20vw' }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+          <Grid item>
+            <URLForm />
+          </Grid>
+
+        </Grid> 
+      </Paper>
+    );
+  }
 }
 
 export default App;
