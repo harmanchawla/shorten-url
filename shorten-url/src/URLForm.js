@@ -54,6 +54,7 @@ class URLForm extends Component {
     };
 
     rows = [];
+    base = "https://rethink-efc70.web.app/";
 
     handleSubmit = async event => {
         event.preventDefault();
@@ -97,9 +98,10 @@ class URLForm extends Component {
             originalURL: URL
         })
         .then((docRef) => {
-            const shortURL = docRef.id;
-            // console.log(shortURL) // works
+            const shortURL = this.base + docRef.id;
             this.changeRows(URL, shortURL);
+            navigator.clipboard.writeText(shortURL);
+            this.setState({open: true});
         })
         .catch((error) => {
             console.error("Error adding document: ", error);

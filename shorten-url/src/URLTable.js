@@ -13,7 +13,7 @@ import Paper from '@material-ui/core/Paper';
 
 const styles = (theme) => ({
     table: {
-        width: '600px',
+        width: '700px',
         fontSize: '16px'
     },
     tablecell: {
@@ -50,7 +50,7 @@ class URLTable extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.props.rows.forEach((row) => (
+                        {this.props.rows.map((row) => (
                             <TableRow key={row.URL} >
                                 <TableCell component="th" scope="row" className={classes.tablecell}>
                                     {row.URL}

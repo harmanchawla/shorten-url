@@ -15,7 +15,7 @@ class App extends Component {
 
       const db = firebase.firestore();
       const URLRef = db.collection('urlLookup').doc(shortURL);
-      
+
       URLRef
         .get()
         .then(function (docSnapshot) {
@@ -23,7 +23,12 @@ class App extends Component {
             // forward to the news page
             URLRef.onSnapshot((doc) => {
               originalURL = doc.data().originalURL;
-              window.location.replace(originalURL);
+              if (originalURL.includes("://")) {
+                window.location.href = originalURL;
+              } else {
+                window.location.href = "http://" + originalURL;
+              }
+              
             });
           } else {
             // No doc exists. Ignore the path.
@@ -51,9 +56,7 @@ class App extends Component {
           <Grid item>
             <URLForm />
           </Grid>
-
         </Grid> 
-
     );
   }
 }
