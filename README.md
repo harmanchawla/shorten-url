@@ -1,5 +1,7 @@
 # shorten-url
-A service to validate and shorten a given URL
+A service to validate and shorten a given URL.
+
+Live Demo: https://rethink-efc70.web.app
 
 ## Design, Stack & Features
 
