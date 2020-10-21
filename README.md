@@ -9,9 +9,11 @@ Live Demo: https://rethink-efc70.web.app
 - The app has a simple design with an input field and a data table.
 - The data table shows the URLs shortened by the user in the same session. 
 - If a user navigates to the page with a shortened link, it redirects to the original link. 
-- User is allowed to quickly copy previously defined links.
+- Sanity check so that only valid URLs get through (regardless of protocol used)
+- User is allowed to quickly copy previously shortned links.
 - This information is lost when the user reloads the page.
 - The links can be used forever!
+
 
 ### Stack
 - Frontend: React, UI with Material UI
@@ -30,6 +32,7 @@ Live Demo: https://rethink-efc70.web.app
 - Components can be further broken down to make it more versatile
 - User sessions can be added to preseve the shorten URLs
 - Analytics can be added to the URL. The database is structure to allow that.
+- Assumes ```HTTP``` as the protocol in case the URL was shortened without one
 
 
 ## Running on local machine
