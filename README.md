@@ -30,3 +30,8 @@ Live Demo: https://rethink-efc70.web.app
 - Components can be further broken down to make it more versatile
 - User sessions can be added to preseve the shorten URLs
 - Analytics can be added to the URL. The database is structure to allow that.
+
+
+## Running on local machine
+- Download or clone the repository
+- Run ```npm install && npm start```
